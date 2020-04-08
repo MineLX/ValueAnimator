@@ -1,8 +1,8 @@
-package com.zyh.pro.animator.main.animators.valueanimator.loopmodes;
+package com.zyh.pro.animator.main.choreographer;
 
 public class TimesBackwardFrames extends TimesFrames {
 
-	TimesBackwardFrames(FrameAccepter accepter, int fps, int duration, int times) {
+	public TimesBackwardFrames(FrameAccepter accepter, int fps, int duration, int times) {
 		super(accepter, fps, duration, times);
 	}
 

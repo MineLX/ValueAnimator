@@ -5,6 +5,8 @@ public interface Animator {
 
 	void stop();
 
+	boolean isRunning();
+
 	static Animator empty() {
 		return new Animator() {
 			@Override
@@ -13,6 +15,11 @@ public interface Animator {
 
 			@Override
 			public void stop() {
+			}
+
+			@Override
+			public boolean isRunning() {
+				return false;
 			}
 		};
 	}

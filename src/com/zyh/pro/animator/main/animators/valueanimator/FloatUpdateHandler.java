@@ -16,11 +16,11 @@ public class FloatUpdateHandler extends UpdateHandler {
 
 	private final float end;
 
-	FloatUpdateHandler(FloatEvaluator evaluator, Interpolator interpolator, List<FloatUpdater> updaters,
+	FloatUpdateHandler(Interpolator interpolator, List<FloatUpdater> updaters,
 	                   float start, float end) {
 		super(interpolator);
 
-		this.evaluator = evaluator;
+		this.evaluator = new FloatEvaluator();
 		this.updaters = updaters;
 		this.start = start;
 		this.end = end;

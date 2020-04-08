@@ -1,12 +1,18 @@
 package com.zyh.pro.animator.main.animators;
 
-public interface DurationAnimatorBuilder extends AnimatorBuilder {
+public abstract class DurationAnimatorBuilder<Self extends DurationAnimatorBuilder<Self>>
+		extends AnimatorBuilder<Self> {
 
-	int DEF_DURATION = 1000;
+	protected int duration;
 
-	DurationAnimatorBuilder setDuration(int duration);
+	public Self setDuration(int duration) {
+		this.duration = duration;
+		return self();
+	}
 
-	int getDuration();
+	public int getDuration() {
+		return duration;
+	}
 
 	static DurationAnimatorBuilder empty() {
 		return new DurationAnimatorBuilder() {
@@ -22,6 +28,11 @@ public interface DurationAnimatorBuilder extends AnimatorBuilder {
 
 			@Override
 			public DurationAnimatorBuilder addListener(AnimatorListener listener) {
+				return this;
+			}
+
+			@Override
+			protected AnimatorBuilder self() {
 				return this;
 			}
 

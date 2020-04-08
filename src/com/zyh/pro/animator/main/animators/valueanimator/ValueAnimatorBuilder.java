@@ -4,31 +4,28 @@ import com.zyh.pro.animator.main.animators.DurationAnimatorBuilder;
 import com.zyh.pro.animator.main.animators.valueanimator.evaluations.*;
 import com.zyh.pro.animator.main.animators.valueanimator.loopmodes.LoopMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ValueAnimatorBuilder implements DurationAnimatorBuilder {
+import static java.util.Collections.singletonList;
+
+public class ValueAnimatorBuilder extends DurationAnimatorBuilder<ValueAnimatorBuilder> {
+
+	private static int DEF_FPS = 60;
 
 	private ValueAnimator result;
 
-	private List<AnimatorListener> listeners;
-
 	private Interpolator interpolator;
-
-	private int duration;
 
 	private ValueAnimator.FramesCallbackFactory loopMode;
 
 	public ValueAnimatorBuilder() {
-		listeners = new ArrayList<>();
 		interpolator = new DefaultInterpolator();
-		duration = DEF_DURATION;
+		duration = 1000;
 		loopMode = LoopMode.normal();
 	}
 
 	@Override
-	public ValueAnimatorBuilder addListener(AnimatorListener listener) {
-		listeners.add(listener);
+	protected ValueAnimatorBuilder self() {
 		return this;
 	}
 
@@ -42,26 +39,23 @@ public class ValueAnimatorBuilder implements DurationAnimatorBuilder {
 		return this;
 	}
 
-	@Override
-	public ValueAnimatorBuilder setDuration(int duration) {
-		this.duration = duration;
+	public ValueAnimatorBuilder floatOrder(float start, float end, FloatUpdater updaters) { // FIXME 2020/4/4  wait for me!!!  it obliges that method should be the terminator of chain invocations
+		return floatOrder(start, end, singletonList(updaters));
+	}
+
+	public <T> ValueAnimatorBuilder objectOrder(Evaluator<T> evaluator, T start, T end, Updater<T> updaters) {
+		return objectOrder(evaluator, start, end, singletonList(updaters));
+	}
+
+	public ValueAnimatorBuilder floatOrder(float start, float end, List<FloatUpdater> updaters) {
+		FloatUpdateHandler handler = new FloatUpdateHandler(interpolator, updaters, start, end);
+		result = new ValueAnimator(loopMode, handler, listeners, DEF_FPS, duration);
 		return this;
 	}
 
-	@Override
-	public int getDuration() {
-		return duration;
-	}
-
-	public ValueAnimatorBuilder floatOrder(float start, float end, FloatUpdater updater) { // FIXME 2020/4/4  wait for me!!!  it obliges that method should be the terminator of chain invocations
-		FloatHandlerFactory factory = new FloatHandlerFactory(interpolator, List.of(updater), start, end);
-		result = new ValueAnimator(loopMode, factory, listeners, DEF_FPS, duration);
-		return this;
-	}
-
-	public <T> ValueAnimatorBuilder objectOrder(Evaluator<T> evaluator, T start, T end, Updater<T> updater) {
-		ObjectHandlerFactory<T> factory = new ObjectHandlerFactory<>(evaluator, interpolator, List.of(updater), start, end);
-		result = new ValueAnimator(loopMode, factory, listeners, DEF_FPS, duration);
+	public <T> ValueAnimatorBuilder objectOrder(Evaluator<T> evaluator, T start, T end, List<Updater<T>> updaters) {
+		ObjectUpdateHandler<T> handler = new ObjectUpdateHandler<>(evaluator, interpolator, updaters, start, end);
+		result = new ValueAnimator(loopMode, handler, listeners, DEF_FPS, duration);
 		return this;
 	}
 

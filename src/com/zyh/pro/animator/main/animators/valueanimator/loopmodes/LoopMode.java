@@ -1,6 +1,7 @@
 package com.zyh.pro.animator.main.animators.valueanimator.loopmodes;
 
 import com.zyh.pro.animator.main.animators.valueanimator.ValueAnimator;
+import com.zyh.pro.animator.main.choreographer.*;
 
 public class LoopMode {
 	public static ValueAnimator.FramesCallbackFactory normal() {

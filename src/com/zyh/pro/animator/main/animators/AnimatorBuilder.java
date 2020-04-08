@@ -1,14 +1,26 @@
 package com.zyh.pro.animator.main.animators;
 
-public interface AnimatorBuilder {
+import java.util.ArrayList;
+import java.util.List;
 
-	int DEF_FPS = 60;
+public abstract class AnimatorBuilder<Self extends AnimatorBuilder<Self>> {
 
-	AnimatorBuilder addListener(AnimatorListener listener);
+	protected final List<AnimatorListener> listeners;
 
-	Animator build();
+	AnimatorBuilder() {
+		listeners = new ArrayList<>();
+	}
 
-	interface AnimatorListener {
+	public Self addListener(AnimatorListener listener) {
+		listeners.add(listener);
+		return self();
+	}
+
+	protected abstract Self self();
+
+	public abstract Animator build();
+
+	public interface AnimatorListener {
 		void onAnimationStart();
 
 		void onAnimationEnd();

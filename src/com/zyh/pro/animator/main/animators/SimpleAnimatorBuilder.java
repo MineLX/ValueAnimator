@@ -3,7 +3,7 @@ package com.zyh.pro.animator.main.animators;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleAnimatorBuilder implements AnimatorBuilder {
+public class SimpleAnimatorBuilder extends AnimatorBuilder {
 
 	private final List<AnimatorListener> listeners; // FIXME 2020/4/3  wait for me!!! duplicated listeners initializations
 
@@ -17,6 +17,11 @@ public class SimpleAnimatorBuilder implements AnimatorBuilder {
 	@Override
 	public SimpleAnimatorBuilder addListener(AnimatorBuilder.AnimatorListener listener) {
 		listeners.add(listener);
+		return this;
+	}
+
+	@Override
+	protected AnimatorBuilder self() {
 		return this;
 	}
 

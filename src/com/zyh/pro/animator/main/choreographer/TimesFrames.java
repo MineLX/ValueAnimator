@@ -1,6 +1,4 @@
-package com.zyh.pro.animator.main.animators.valueanimator.loopmodes;
-
-import com.zyh.pro.animator.main.common.Choreographer;
+package com.zyh.pro.animator.main.choreographer;
 
 public abstract class TimesFrames extends Frames {
 

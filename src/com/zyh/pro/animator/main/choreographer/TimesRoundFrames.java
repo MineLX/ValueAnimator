@@ -1,4 +1,4 @@
-package com.zyh.pro.animator.main.animators.valueanimator.loopmodes;
+package com.zyh.pro.animator.main.choreographer;
 
 public class TimesRoundFrames extends TimesFrames {
 
@@ -6,7 +6,7 @@ public class TimesRoundFrames extends TimesFrames {
 
 	private int stopAt;
 
-	TimesRoundFrames(FrameAccepter accepter, int fps, int duration, int times) {
+	public TimesRoundFrames(FrameAccepter accepter, int fps, int duration, int times) {
 		super(accepter, fps, duration, times);
 
 		factor = 1;

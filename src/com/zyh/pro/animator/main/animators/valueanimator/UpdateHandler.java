@@ -8,7 +8,7 @@ public abstract class UpdateHandler implements MessageHandler {
 
 	private final Interpolator interpolator;
 
-	public UpdateHandler(Interpolator interpolator) {
+	UpdateHandler(Interpolator interpolator) {
 		this.interpolator = interpolator;
 	}
 

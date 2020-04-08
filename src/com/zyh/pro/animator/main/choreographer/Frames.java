@@ -1,8 +1,6 @@
-package com.zyh.pro.animator.main.animators.valueanimator.loopmodes;
+package com.zyh.pro.animator.main.choreographer;
 
-import com.zyh.pro.animator.main.common.Choreographer;
-
-public class Frames implements Choreographer.Callback {
+public class Frames extends StateCallback {
 
 	private final FrameAccepter accepter;
 
@@ -29,12 +27,12 @@ public class Frames implements Choreographer.Callback {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStartNotify() {
 		accepter.onStart();
 	}
 
 	@Override
-	public void onEnd() {
+	public void onEndNotify() {
 		accepter.onEnd();
 	}
 

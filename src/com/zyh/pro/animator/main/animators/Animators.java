@@ -8,6 +8,9 @@ import com.zyh.pro.animator.main.animators.valueanimator.evaluations.Updater;
 
 public class Animators {
 
+	private Animators() {
+	}
+
 	public static Animator valueFloat(float start, float end, int duration, FloatUpdater updater) {
 		ValueAnimatorBuilder builder = new ValueAnimatorBuilder()
 				.setDuration(duration)

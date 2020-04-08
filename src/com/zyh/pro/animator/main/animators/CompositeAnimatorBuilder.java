@@ -2,20 +2,16 @@ package com.zyh.pro.animator.main.animators;
 
 import com.zyh.pro.animator.main.common.Composition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Comparator.comparingInt;
 
-public class CompositeAnimatorBuilder implements DurationAnimatorBuilder {
-
-	private final List<AnimatorListener> listeners;
+public class CompositeAnimatorBuilder extends DurationAnimatorBuilder<CompositeAnimatorBuilder> {
 
 	private final Composition<DurationAnimatorBuilder> builders;
 
 	public CompositeAnimatorBuilder() {
 		builders = new Composition<>();
-		listeners = new ArrayList<>();
 	}
 
 	public CompositeAnimatorBuilder with(DurationAnimatorBuilder with) {
@@ -25,12 +21,6 @@ public class CompositeAnimatorBuilder implements DurationAnimatorBuilder {
 
 	public CompositeAnimatorBuilder after(DurationAnimatorBuilder after) {
 		builders.after(after);
-		return this;
-	}
-
-	@Override
-	public CompositeAnimatorBuilder addListener(AnimatorListener listener) {
-		listeners.add(listener);
 		return this;
 	}
 
@@ -50,6 +40,11 @@ public class CompositeAnimatorBuilder implements DurationAnimatorBuilder {
 				.reduce(0, Integer::sum);
 	}
 
+	@Override
+	public CompositeAnimator build() {
+		return new CompositeAnimator(builders.toList(), listeners);
+	}
+
 	private DurationAnimatorBuilder getMaxOnDuration(List<DurationAnimatorBuilder> item) {
 		return item.stream()
 				.max(comparingInt(DurationAnimatorBuilder::getDuration))
@@ -57,7 +52,7 @@ public class CompositeAnimatorBuilder implements DurationAnimatorBuilder {
 	}
 
 	@Override
-	public CompositeAnimator build() {
-		return new CompositeAnimator(builders.toList(), listeners);
+	protected CompositeAnimatorBuilder self() {
+		return this;
 	}
 }

@@ -21,6 +21,8 @@ public class CompositeAnimator implements Animator {
 
 	private final List<AnimatorListener> listeners;
 
+	private boolean isRunning;
+
 	CompositeAnimator(List<List<DurationAnimatorBuilder>> animators, List<AnimatorListener> listeners) {
 		this.animators = animators;
 		this.listeners = listeners;
@@ -33,24 +35,31 @@ public class CompositeAnimator implements Animator {
 	@Override
 	public void start() {
 		setupListeners();
-		onStart();
+		startCallback();
 		startLevel(0);
 	}
 
 	@Override
-	public void stop() {
+	public void stop() { // FIXME 2020/4/8  wait for me!!!  test read N write
 		levelIndex.set(animators.size());
 		runningAnimatorsLock.lock();
 		runningAnimators.forEach(Animator::stop);
 		runningAnimatorsLock.unlock();
 	}
 
-	private void onStart() {
-		listeners.forEach(AnimatorListener::onAnimationStart);
+	@Override
+	public boolean isRunning() {
+		return isRunning;
 	}
 
-	private void onEnd() {
+	private void startCallback() {
+		listeners.forEach(AnimatorListener::onAnimationStart);
+		isRunning = true;
+	}
+
+	private void endCallback() {
 		listeners.forEach(AnimatorListener::onAnimationEnd);
+		isRunning = false;
 	}
 
 	private void startLevel(int index) {
@@ -73,6 +82,7 @@ public class CompositeAnimator implements Animator {
 					.orElseGet(DurationAnimatorBuilder::empty)
 					.addListener(listener);
 	}
+
 	private class StepListener implements AnimatorListener {
 		@Override
 		public void onAnimationStart() {
@@ -81,7 +91,7 @@ public class CompositeAnimator implements Animator {
 		@Override
 		public void onAnimationEnd() {
 			if (levelIndex.incrementAndGet() >= animators.size()) {
-				onEnd();
+				endCallback();
 				return;
 			}
 			startLevel(levelIndex.get());

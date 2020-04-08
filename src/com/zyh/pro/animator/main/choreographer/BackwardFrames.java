@@ -1,8 +1,8 @@
-package com.zyh.pro.animator.main.animators.valueanimator.loopmodes;
+package com.zyh.pro.animator.main.choreographer;
 
 public class BackwardFrames extends Frames {
 
-	BackwardFrames(FrameAccepter accepter, int fps, int duration) {
+	public BackwardFrames(FrameAccepter accepter, int fps, int duration) {
 		super(accepter, fps, duration);
 	}
 

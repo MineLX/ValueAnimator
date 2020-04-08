@@ -1,7 +1,8 @@
 package com.zyh.pro.animator.main.animators;
 
-import com.zyh.pro.animator.main.common.Choreographer;
+import com.zyh.pro.animator.main.choreographer.Choreographer;
 import com.zyh.pro.animator.main.animators.AnimatorBuilder.AnimatorListener;
+import com.zyh.pro.animator.main.choreographer.StateCallback;
 import com.zyh.pro.animator.main.looper.Looper;
 import com.zyh.pro.animator.main.looper.Message;
 
@@ -11,28 +12,16 @@ public class SimpleAnimator implements Animator {
 
 	private static final int DEF_FPS = 60;
 
+	private final MyCallback callback;
+
 	private final Choreographer task;
 
 	private final Looper looper;
 
 	SimpleAnimator(List<AnimatorListener> listeners, List<Runnable> updaters) {
 		looper = new Looper(message -> updaters.forEach(Runnable::run));
-		task = new Choreographer(DEF_FPS, new Choreographer.Callback() {
-			@Override
-			public void onNotify(Choreographer choreographer) {
-				looper.getQueue().enter(Message.get());
-			}
-
-			@Override
-			public void onStart() {
-				listeners.forEach(AnimatorListener::onAnimationStart);
-			}
-
-			@Override
-			public void onEnd() {
-				listeners.forEach(AnimatorListener::onAnimationEnd);
-			}
-		});
+		callback = new MyCallback(listeners);
+		task = new Choreographer(DEF_FPS, callback);
 	}
 
 	@Override
@@ -45,5 +34,33 @@ public class SimpleAnimator implements Animator {
 	public void stop() {
 		looper.interrupt();
 		task.stop();
+	}
+
+	@Override
+	public boolean isRunning() {
+		return callback.isRunning();
+	}
+
+	private class MyCallback extends StateCallback {
+		private final List<AnimatorListener> listeners;
+
+		private MyCallback(List<AnimatorListener> listeners) {
+			this.listeners = listeners;
+		}
+
+		@Override
+		public void onNotify(Choreographer choreographer) {
+			looper.getQueue().enter(Message.get());
+		}
+
+		@Override
+		public void onStartNotify() {
+			listeners.forEach(AnimatorListener::onAnimationStart);
+		}
+
+		@Override
+		public void onEndNotify() {
+			listeners.forEach(AnimatorListener::onAnimationEnd);
+		}
 	}
 }
