@@ -1,7 +1,7 @@
 package com.zyh.pro.animator.test;
 
-import com.zyh.pro.animator.main.animators.Animator;
 import com.zyh.pro.animator.main.animators.Animators;
+import com.zyh.pro.animator.main.animators.ToggleAnimator;
 import com.zyh.pro.animator.main.animators.ToggleAnimatorBuilder;
 import com.zyh.pro.animator.main.animators.valueanimator.ValueAnimatorBuilder;
 import com.zyh.pro.animator.main.animators.valueanimator.evaluations.Evaluator;
@@ -24,23 +24,24 @@ public class ToggleAnimatorTest {
 	private static Rectangle rectangle = new Rectangle(500);
 
 	public static void main(String[] args) throws InterruptedException {
-		ToggleAnimatorBuilder builder = new ToggleAnimatorBuilder();
 
-		builder.addToggle(() -> new ValueAnimatorBuilder()
+		ToggleAnimator animator = new ToggleAnimatorBuilder()
+				.addToggle(new ValueAnimatorBuilder()
 						.setDuration(2000)
-						.objectOrder(new RectEvaluator(), cloneCurrent(), new Rectangle(0), rectangle1 -> rectangle = rectangle1))
-				.addToggle(() -> new ValueAnimatorBuilder()
+						.getterOrder(new RectEvaluator(), ToggleAnimatorTest::cloneCurrent, () -> new Rectangle(0), rectangle1 -> rectangle = rectangle1))
+				.addToggle(new ValueAnimatorBuilder()
 						.setDuration(2000)
-						.objectOrder(new RectEvaluator(), cloneCurrent(), new Rectangle(500), rectangle1 -> rectangle = rectangle1));
-		Animator animator = builder.build();
+						.getterOrder(new RectEvaluator(), ToggleAnimatorTest::cloneCurrent, () -> new Rectangle(500), rectangle1 -> rectangle = rectangle1))
+				.build();
 
 		Animators.justDoIt(() -> System.out.println(rectangle)).start();
 
 		animator.start();
-		Thread.sleep(500);
+		Thread.sleep(1000);
+		System.out.println("switch!switch!switch!switch!switch!switch!");
 		animator.start();
-		Thread.sleep(700);
-		animator.start();
+//		Thread.sleep(700);
+//		animator.start();
 	}
 
 	private static Rectangle cloneCurrent() {

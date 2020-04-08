@@ -2,6 +2,7 @@ package com.zyh.pro.animator.main.animators.valueanimator;
 
 import com.zyh.pro.animator.main.animators.Animator;
 import com.zyh.pro.animator.main.animators.AnimatorBuilder.AnimatorListener;
+import com.zyh.pro.animator.main.choreographer.Frames.FrameAccepter;
 import com.zyh.pro.animator.main.choreographer.StateCallback;
 import com.zyh.pro.animator.main.animators.valueanimator.loopmodes.Evaluation;
 import com.zyh.pro.animator.main.choreographer.Frames;
@@ -18,9 +19,9 @@ public class ValueAnimator implements Animator {
 
 	private static final int STATE_RUNNING = 1;
 
-	private final StateCallback callback;
-
 	private int state;
+
+	private final StateCallback callback;
 
 	private final Choreographer choreographer;
 
@@ -30,7 +31,7 @@ public class ValueAnimator implements Animator {
 	              int fps, int duration) {
 		looper = new Looper(updateHandler);
 
-		Frames.FrameAccepter accepter =
+		FrameAccepter accepter =
 				new Evaluation(looper.getQueue(), animatorListeners, looper::interrupt, fps, getAllFrames(fps, duration));
 
 		callback = callbackFactory.createCallback(accepter, fps, duration);
@@ -59,6 +60,6 @@ public class ValueAnimator implements Animator {
 	}
 
 	public interface FramesCallbackFactory {
-		StateCallback createCallback(Frames.FrameAccepter accepter, int fps, int duration);
+		StateCallback createCallback(FrameAccepter accepter, int fps, int duration);
 	}
 }

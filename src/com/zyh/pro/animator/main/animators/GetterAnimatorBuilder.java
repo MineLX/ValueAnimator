@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class GetterAnimatorBuilder<T> extends DurationAnimatorBuilder {
+public class GetterAnimatorBuilder<T> extends DurationAnimatorBuilder<GetterAnimatorBuilder<T>> {
 
 	private final List<Updater<T>> updaters;
 
@@ -25,18 +25,22 @@ public class GetterAnimatorBuilder<T> extends DurationAnimatorBuilder {
 		updaters = new ArrayList<>();
 	}
 
-	public GetterAnimatorBuilder addUpdater(Updater<T> updater) {
+	public GetterAnimatorBuilder<T> addUpdater(Updater<T> updater) {
 		updaters.add(updater);
 		return this;
 	}
 
+	public static void main(String[] args) {
+		new GetterAnimatorBuilder<>(() -> "", () -> "", null).setDuration(2000).addUpdater(System.out::println).build().start();
+	}
+
 	@Override
-	protected AnimatorBuilder self() {
+	protected GetterAnimatorBuilder<T> self() {
 		return this;
 	}
 
 	@Override
 	public GetterAnimator<T> build() {
-		return new GetterAnimator<>(evaluator, startGetter, endGetter, updaters, duration);
+		return new GetterAnimator<>(evaluator, startGetter, endGetter, listeners, updaters, duration);
 	}
 }

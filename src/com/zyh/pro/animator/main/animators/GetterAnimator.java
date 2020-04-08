@@ -1,5 +1,6 @@
 package com.zyh.pro.animator.main.animators;
 
+import com.zyh.pro.animator.main.animators.AnimatorBuilder.AnimatorListener;
 import com.zyh.pro.animator.main.animators.valueanimator.ValueAnimator;
 import com.zyh.pro.animator.main.animators.valueanimator.ValueAnimatorBuilder;
 import com.zyh.pro.animator.main.animators.valueanimator.evaluations.Evaluator;
@@ -16,15 +17,18 @@ public class GetterAnimator<T> implements Animator {
 
 	private final Supplier<T> endGetter;
 
+	private final List<AnimatorListener> listeners;
+
 	private final List<Updater<T>> updaters;
 
 	private final int duration;
 
 	private ValueAnimator animator;
 
-	GetterAnimator(Evaluator<T> evaluator, Supplier<T> startGetter, Supplier<T> endGetter, List<Updater<T>> updaters,
+	GetterAnimator(Evaluator<T> evaluator, Supplier<T> startGetter, Supplier<T> endGetter, List<AnimatorListener> listeners, List<Updater<T>> updaters,
 	               int duration) {
 		this.evaluator = evaluator;
+		this.listeners = listeners;
 		this.updaters = updaters;
 		this.startGetter = startGetter;
 		this.endGetter = endGetter;
@@ -33,9 +37,13 @@ public class GetterAnimator<T> implements Animator {
 
 	@Override
 	public void start() {
-		animator = new ValueAnimatorBuilder()
+		ValueAnimatorBuilder builder = new ValueAnimatorBuilder();
+		listeners.forEach(builder::addListener);
+
+		animator = builder
 				.setDuration(duration)
-				.objectOrder(evaluator, startGetter.get(), endGetter.get(), updaters).build();
+				.objectOrder(evaluator, startGetter.get(), endGetter.get(), updaters)
+				.build();
 		animator.start();
 	}
 

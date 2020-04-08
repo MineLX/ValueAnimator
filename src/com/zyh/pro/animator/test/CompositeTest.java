@@ -2,6 +2,7 @@ package com.zyh.pro.animator.test;
 
 import com.zyh.pro.animator.main.animators.CompositeAnimator;
 import com.zyh.pro.animator.main.animators.CompositeAnimatorBuilder;
+import com.zyh.pro.animator.main.animators.GetterAnimatorBuilder;
 import com.zyh.pro.animator.main.animators.valueanimator.ValueAnimatorBuilder;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -10,7 +11,23 @@ import static org.junit.Assert.assertThat;
 public class CompositeTest {
 
 	public static void main(String[] args) throws InterruptedException {
-		simple_composite();
+		new CompositeAnimatorBuilder()
+				.with(new GetterAnimatorBuilder<>(CompositeTest::cloneCurrentBall, CompositeTest::createEnd, new Location.LocationEvaluator())
+						.setDuration(1000)
+						.addUpdater(System.out::println))
+				.after(new ValueAnimatorBuilder()
+						.setDuration(2000)
+						.addListener(new TestAnimatorListener())
+						.floatOrder(0, 500, System.out::println))
+				.build().start();
+	}
+
+	private static Location createEnd() {
+		return new Location(0, 0);
+	}
+
+	private static Location cloneCurrentBall() {
+		return new Location(50, 100);
 	}
 
 	private static void stop_composite() throws InterruptedException {

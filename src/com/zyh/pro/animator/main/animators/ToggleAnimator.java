@@ -1,17 +1,16 @@
 package com.zyh.pro.animator.main.animators;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ToggleAnimator implements Animator {
 
-	private final List<Supplier<AnimatorBuilder>> toggleItems;
+	private final List<AnimatorBuilder> toggleItems;
 
 	private Animator currentAnimator;
 
 	private int toggleIndex;
 
-	ToggleAnimator(List<Supplier<AnimatorBuilder>> toggleItems) {
+	ToggleAnimator(List<AnimatorBuilder> toggleItems) {
 		this.toggleItems = toggleItems;
 		toggleIndex = 0;
 	}
@@ -21,7 +20,7 @@ public class ToggleAnimator implements Animator {
 		if (currentAnimator != null && currentAnimator.isRunning())
 			currentAnimator.stop();
 
-		currentAnimator = toggleItems.get(toggleIndex).get().build();
+		currentAnimator = toggleItems.get(toggleIndex).build();
 		currentAnimator.start();
 		nextToggle();
 	}

@@ -5,6 +5,7 @@ import com.zyh.pro.animator.main.animators.valueanimator.evaluations.*;
 import com.zyh.pro.animator.main.animators.valueanimator.loopmodes.LoopMode;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static java.util.Collections.singletonList;
 
@@ -22,11 +23,6 @@ public class ValueAnimatorBuilder extends DurationAnimatorBuilder<ValueAnimatorB
 		interpolator = new DefaultInterpolator();
 		duration = 1000;
 		loopMode = LoopMode.normal();
-	}
-
-	@Override
-	protected ValueAnimatorBuilder self() {
-		return this;
 	}
 
 	public ValueAnimatorBuilder setInterpolator(Interpolator interpolator) {
@@ -47,6 +43,10 @@ public class ValueAnimatorBuilder extends DurationAnimatorBuilder<ValueAnimatorB
 		return objectOrder(evaluator, start, end, singletonList(updaters));
 	}
 
+	public <T> ValueAnimatorBuilder getterOrder(Evaluator<T> evaluator, Supplier<T> start, Supplier<T> end, Updater<T> updater) {
+		return getterOrder(evaluator, start, end, singletonList(updater));
+	}
+
 	public ValueAnimatorBuilder floatOrder(float start, float end, List<FloatUpdater> updaters) {
 		FloatUpdateHandler handler = new FloatUpdateHandler(interpolator, updaters, start, end);
 		result = new ValueAnimator(loopMode, handler, listeners, DEF_FPS, duration);
@@ -59,8 +59,19 @@ public class ValueAnimatorBuilder extends DurationAnimatorBuilder<ValueAnimatorB
 		return this;
 	}
 
+	public <T> ValueAnimatorBuilder getterOrder(Evaluator<T> evaluator, Supplier<T> start, Supplier<T> end, List<Updater<T>> updaters) {
+		GetterHandler<T> handler = new GetterHandler<>(evaluator, interpolator, updaters, start, end);
+		result = new ValueAnimator(loopMode, handler, listeners, DEF_FPS, duration);
+		return this;
+	}
+
 	@Override
 	public ValueAnimator build() {
 		return result;
+	}
+
+	@Override
+	protected ValueAnimatorBuilder self() {
+		return this;
 	}
 }

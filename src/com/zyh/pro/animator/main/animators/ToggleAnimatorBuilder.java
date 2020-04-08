@@ -2,23 +2,22 @@ package com.zyh.pro.animator.main.animators;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ToggleAnimatorBuilder extends DurationAnimatorBuilder<ToggleAnimatorBuilder> {
 
-	private final List<Supplier<AnimatorBuilder>> toggleItems;
+	private final List<AnimatorBuilder> toggleItems;
 
 	public ToggleAnimatorBuilder() {
 		toggleItems = new ArrayList<>();
 	}
 
-	public ToggleAnimatorBuilder addToggle(Supplier<AnimatorBuilder> toggleItem) {
+	public ToggleAnimatorBuilder addToggle(AnimatorBuilder toggleItem) {
 		toggleItems.add(toggleItem);
 		return this;
 	}
 
 	@Override
-	public Animator build() {
+	public ToggleAnimator build() {
 		return new ToggleAnimator(toggleItems);
 	}
 
