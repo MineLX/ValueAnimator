@@ -1,3 +1,3 @@
 # ValueAnimator
-ValueAnimator in PURE java
+ValueAnimator with PURE jdk
 
